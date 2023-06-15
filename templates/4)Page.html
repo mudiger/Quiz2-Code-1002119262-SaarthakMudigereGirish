@@ -1,15 +1,38 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>Time</title>
+    <title>Page4</title>
 {% endblock %}
 
 {% block body %}
     <div>
-        {% if night_count>day_count %}
-            <h2>Yes, large magnitude occurs during nighttime because of number of earthquakes during night time {{night_count}} is greater than day time {{day_count}} </h2>
-        {% else %}
-               <h2>No, large magnitude occurs during daytime because of number of earthquakes during night time {{night_count}} is less than day time {{day_count}} </h2>
+        <form method="POST">
+            <h2>Please enter details</h2>
+            <label for="city">Enter city: </label>
+            <input type="text" id="city" name="city">
+            <label for="state">Enter state: </label>
+            <input type="text" id="state" name="state">
+            <label for="pop">Enter population: </label>
+            <input type="number" id="pop" name="pop">
+            <label for="pic">Enter latitude: </label>
+            <input type="number" id="pic" name="lat">
+            <label for="notes">Enter longitude: </label>
+            <input type="number" id="notes" name="long">
+            <button type="submit">Submit</button><br>
+        </form>
+
+
+        {% if salpics %}
+        <h2>Added row is </h2>
+            <ul style="list-style-type:none">
+                <table>
+                    <tr>
+                        {% for salpic in salpics %}
+                        <td> {{ salpic }}</td>
+                        {% endfor %}
+                    </tr>
+                </table>
+            </ul>
         {% endif %}
 
     </div>

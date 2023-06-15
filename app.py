@@ -28,29 +28,36 @@ def index():
 @app.route("/page1/", methods=['GET', 'POST'])
 def page1():
     salpics = []
-    count = ""
-    n = ""
+    salpics2 = []
+    city = ""
     if request.method == "POST":
-        count = request.form.get('count')
+        city = request.form.get('city')
 
-        query = "SELECT * FROM dbo.all_month WHERE mag>?"
-        cursor.execute(query, count)
+        query = "SELECT TOP(1) * FROM dbo.city WHERE City=?"
+        cursor.execute(query, city)
 
         rows = cursor.fetchall()
         for i in rows:
             salpics.append(i)
 
-        query2 = "SELECT COUNT(id) FROM dbo.all_month WHERE mag>?"
-        cursor.execute(query2, count)
-        num = cursor.fetchone()
-        n = num[0]
-    return render_template("1)Page.html", count=count, salpics=salpics, n=n)
+        lat = salpics[0][2]
+        long = salpics[0][3]
+
+        query2 = "SELECT * FROM dbo.city WHERE ( 6371 * ACOS(COS(RADIANS(lat)) * COS(RADIANS(?)) * COS(RADIANS(lon) - RADIANS(?)) + SIN(RADIANS(lat)) * SIN(RADIANS(?)) )) <=100 ; "
+        cursor.execute(query2, lat, long, lat)
+        row2 = cursor.fetchall()
+        for i in row2:
+            salpics2.append(i)
+
+    return render_template("1)Page.html", city=city, salpics=salpics, salpics2=salpics2)
 
 
 @app.route("/page2/", methods=['GET', 'POST'])
 def page2():
-    min = ""
-    max = ""
+    minlat = ""
+    maxlat = ""
+    minlong = ""
+    maxlong = ""
     system = ""
     salpics = []
     days = ""
@@ -94,16 +101,82 @@ def cluster():
     return render_template("4)cluster.html")
 '''
 
+'''
+@app.route("/remove/", methods=['GET', 'POST'])
+def remove():
+    name = ""
+    salpics = []
+    system = ""
+    if request.method == "POST":
+        name = request.form.get('name')
+
+        # Execute a query
+        query = "SELECT * FROM dbo.q1c WHERE name=?"
+        cursor.execute(query, name)
+
+        # Fetch a single row
+        row = cursor.fetchone()
+        print(row)
+        if row is None:
+            system = None
+        else:
+            # Access row values
+            for i in range(len(row)):
+                # Assuming the table has columns named 'column1', 'column2', and 'column3'
+                salpics.append(row[i])
+
+        query = "DELETE FROM dbo.q1c WHERE name = ?"
+        cursor.execute(query, name)
+        conn.commit()
+
+    return render_template("remove.html", name=name, salpics=salpics, system=system)
+'''
 
 @app.route("/page4/", methods=['GET', 'POST'])
 def page4():
-    query = "SELECT CASE WHEN DATEPART(HOUR, [time]) >= 18 OR DATEPART(HOUR, [time]) < 6 THEN 'Night-time (6 PM - 6 AM)' ELSE 'Day-time (6 AM - 6 PM)' END AS time_range, COUNT(*) AS earthquake_count FROM [dbo].[all_month] WHERE mag > 4 GROUP BY CASE WHEN DATEPART(HOUR, [time]) >= 18 OR DATEPART(HOUR, [time]) < 6 THEN 'Night-time (6 PM - 6 AM)' ELSE 'Day-time (6 AM - 6 PM)' END"
-    cursor.execute(query)
-    count = cursor.fetchall()
-    night_count=count[1]
-    day_count = count[0]
-    return render_template("4)Page.html", night_count=night_count[1], day_count=day_count[1])
+    salpics = []
+    if request.method == "POST":
+        city = request.form.get('city')
+        state = request.form.get('state')
+        pop = request.form.get('pop')
+        lat = request.form.get('lat')
+        long = request.form.get('long')
 
+        # Execute a query
+        query = "INSERT INTO dbo.city VALUES (?,?,?,?,?)"
+        cursor.execute(query, city, state, pop, lat, long)
+        conn.commit()
+
+        query = "SELECT * FROM dbo.city WHERE name=?"
+        cursor.execute(query, city)
+
+        # Fetch a single row
+        row = cursor.fetchone()
+        # Access row values
+        for i in range(len(row)):
+            # Assuming the table has columns named 'column1', 'column2', and 'column3'
+            salpics.append(row[i])
+
+    return render_template("4)Page.html", salpics=salpics)
+
+'''
+@app.route("/edit/", methods=['GET', 'POST'])
+def edit():
+    name = ""
+    col = ""
+    ele = ""
+    if request.method == "POST":
+        name = request.form.get('name')
+        col = request.form.get('col')
+        ele = request.form.get('ele')
+
+        # Execute a simple select query
+        query = "UPDATE dbo.q1c SET ?=? WHERE name=?"
+        cursor.execute(query, col, ele, name)
+        conn.commit()
+
+    return render_template("edit.html", name=name, col=col, ele=ele)
+'''
 
 if __name__ == "__main__":
     app.run(debug=True)
