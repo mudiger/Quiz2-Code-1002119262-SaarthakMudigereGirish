@@ -103,40 +103,11 @@ def cluster():
     return render_template("4)cluster.html")
 
 
-
-@app.route("/remove/", methods=['GET', 'POST'])
-def remove():
-    name = ""
-    salpics = []
-    system = ""
-    if request.method == "POST":
-        name = request.form.get('name')
-
-        # Execute a query
-        query = "SELECT * FROM dbo.q1c WHERE name=?"
-        cursor.execute(query, name)
-
-        # Fetch a single row
-        row = cursor.fetchone()
-        print(row)
-        if row is None:
-            system = None
-        else:
-            # Access row values
-            for i in range(len(row)):
-                # Assuming the table has columns named 'column1', 'column2', and 'column3'
-                salpics.append(row[i])
-
-        query = "DELETE FROM dbo.q1c WHERE name = ?"
-        cursor.execute(query, name)
-        conn.commit()
-
-    return render_template("remove.html", name=name, salpics=salpics, system=system)
 '''
 
 
-@app.route("/page4/", methods=['GET', 'POST'])
-def page4():
+@app.route("/page4a/", methods=['GET', 'POST'])
+def page4a():
     salpics = []
     if request.method == "POST":
         city = request.form['city']
@@ -160,26 +131,39 @@ def page4():
             # Assuming the table has columns named 'column1', 'column2', and 'column3'
             salpics.append(row[i])
 
-    return render_template("4)Page.html", salpics=salpics)
-'''
+    return render_template("4)Pagea.html", salpics=salpics)
 
-@app.route("/edit/", methods=['GET', 'POST'])
-def edit():
-    name = ""
-    col = ""
-    ele = ""
+
+@app.route("/page4b/", methods=['GET', 'POST'])
+def page4b():
+    city = ""
+    state = ""
+    salpics = []
+    system = ""
     if request.method == "POST":
-        name = request.form.get('name')
-        col = request.form.get('col')
-        ele = request.form.get('ele')
+        city = request.form['city']
+        state = request.form['city']
 
-        # Execute a simple select query
-        query = "UPDATE dbo.q1c SET ?=? WHERE name=?"
-        cursor.execute(query, col, ele, name)
+        # Execute a query
+        query = "SELECT * FROM dbo.city WHERE city=? OR state=?"
+        cursor.execute(query, city, state)
+
+        # Fetch a single row
+        row = cursor.fetchone()
+        if row is None:
+            system = None
+        else:
+            # Access row values
+            for i in range(len(row)):
+                # Assuming the table has columns named 'column1', 'column2', and 'column3'
+                salpics.append(row[i])
+
+        query = "DELETE FROM dbo.city WHERE city=? or state=?"
+        cursor.execute(query, city, state)
         conn.commit()
 
-    return render_template("edit.html", name=name, col=col, ele=ele)
-'''
+    return render_template("4)Pageb.html", city=city, state=state, salpics=salpics, system=system)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
