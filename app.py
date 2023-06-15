@@ -51,7 +51,7 @@ def page1():
 
     return render_template("1)Page.html", city=city, salpics=salpics, salpics2=salpics2)
 
-
+'''
 @app.route("/page2/", methods=['GET', 'POST'])
 def page2():
     minlat = ""
@@ -75,8 +75,8 @@ def page2():
             for i in row:
                 salpics.append(i)
     return render_template("2)Page.html", salpics=salpics, system=system)
-
 '''
+
 @app.route("/page3/", methods=['GET', 'POST'])
 def page3():
     salpics = []
@@ -95,13 +95,6 @@ def page3():
             salpics.append(i)
     return render_template("3)Page.html", salpics=salpics, distance=distance)
 
-
-@app.route("/cluster/", methods=['GET', 'POST'])
-def cluster():
-    return render_template("4)cluster.html")
-
-
-'''
 
 
 @app.route("/page4a/", methods=['GET', 'POST'])
@@ -156,7 +149,7 @@ def page4b():
                 # Assuming the table has columns named 'column1', 'column2', and 'column3'
                 salpics.append(row[i])
 
-        query = "DELETE FROM dbo.city WHERE city=? AND state=?"
+        query = "DELETE FROM dbo.city WHERE City=? OR State=?"
         cursor.execute(query, city, state)
         conn.commit()
 
