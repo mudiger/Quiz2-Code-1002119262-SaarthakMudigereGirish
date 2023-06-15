@@ -51,7 +51,7 @@ def page1():
 
     return render_template("1)Page.html", city=city, salpics=salpics, salpics2=salpics2)
 
-'''
+
 @app.route("/page2/", methods=['GET', 'POST'])
 def page2():
     minlat = ""
@@ -61,14 +61,13 @@ def page2():
     system = ""
     salpics = []
     if request.method == "POST":
-        minlan = request.form['minlan']
-        maxlan = request.form['maxlan']
+        minlat = request.form['minlat']
+        maxlat = request.form['maxlat']
         minlong = request.form['minlong']
         maxlong = request.form['maxlong']
-        days = request.form['days']
         # Execute a simple select query
-        query = f"SELECT * FROM dbo.city WHERE lan BETWEEN ? AND ? AND lon BETWEEN ? AND ?"
-        cursor.execute(query, minlan, maxlan, minlan, maxlong)
+        query = f"SELECT * FROM dbo.city WHERE lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?"
+        cursor.execute(query, minlat, maxlat, minlong, maxlong)
         row = cursor.fetchall()
         if row is None:
             system = None
@@ -77,7 +76,7 @@ def page2():
                 salpics.append(i)
     return render_template("2)Page.html", salpics=salpics, system=system)
 
-
+'''
 @app.route("/page3/", methods=['GET', 'POST'])
 def page3():
     salpics = []
