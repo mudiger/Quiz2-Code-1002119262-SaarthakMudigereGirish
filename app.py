@@ -51,7 +51,7 @@ def page1():
 
     return render_template("1)Page.html", city=city, salpics=salpics, salpics2=salpics2)
 
-
+'''
 @app.route("/page2/", methods=['GET', 'POST'])
 def page2():
     minlat = ""
@@ -62,8 +62,10 @@ def page2():
     salpics = []
     days = ""
     if request.method == "POST":
-        min = request.form['min']
-        max = request.form['max']
+        minlan = request.form['minlan']
+        maxlan = request.form['maxlan']
+        minlong = request.form['minlong']
+        maxlong = request.form['maxlong']
         days = request.form['days']
         # Execute a simple select query
         query = f"SELECT * FROM dbo.all_month WHERE mag BETWEEN ? AND ? AND CAST(time AS DATE) BETWEEN '2023-06-01' AND '2023-06-{days}'"
@@ -95,13 +97,13 @@ def page3():
             salpics.append(i)
     return render_template("3)Page.html", salpics=salpics, distance=distance)
 
-'''
+
 @app.route("/cluster/", methods=['GET', 'POST'])
 def cluster():
     return render_template("4)cluster.html")
-'''
 
-'''
+
+
 @app.route("/remove/", methods=['GET', 'POST'])
 def remove():
     name = ""
@@ -132,23 +134,24 @@ def remove():
     return render_template("remove.html", name=name, salpics=salpics, system=system)
 '''
 
+
 @app.route("/page4/", methods=['GET', 'POST'])
 def page4():
     salpics = []
     if request.method == "POST":
-        city = request.form.get('city')
-        state = request.form.get('state')
-        pop = request.form.get('pop')
-        lat = request.form.get('lat')
-        long = request.form.get('long')
+        city = request.form['city']
+        state = request.form['state']
+        pop = request.form['pop']
+        lat = request.form['lat']
+        long = request.form['long']
 
         # Execute a query
         query = "INSERT INTO dbo.city VALUES (?,?,?,?,?)"
         cursor.execute(query, city, state, pop, lat, long)
         conn.commit()
 
-        query = "SELECT * FROM dbo.city WHERE name=?"
-        cursor.execute(query, city)
+        query = "SELECT * FROM dbo.city WHERE lat=? AND lon=? AND population=?"
+        cursor.execute(query, lat, long, pop)
 
         # Fetch a single row
         row = cursor.fetchone()
@@ -158,8 +161,8 @@ def page4():
             salpics.append(row[i])
 
     return render_template("4)Page.html", salpics=salpics)
-
 '''
+
 @app.route("/edit/", methods=['GET', 'POST'])
 def edit():
     name = ""
