@@ -43,7 +43,7 @@ def page1():
         lat = salpics[0][2]
         long = salpics[0][3]
 
-        query2 = "SELECT * FROM dbo.city WHERE ( 6371 * ACOS(COS(RADIANS(lat)) * COS(RADIANS(?)) * COS(RADIANS(lon) - RADIANS(?)) + SIN(RADIANS(lat)) * SIN(RADIANS(?)) )) <=100 ; "
+        query2 = "SELECT * FROM dbo.city WHERE ( 6371 * ACOS(COS(RADIANS(lat)) * COS(RADIANS(?)) * COS(RADIANS(lon) - RADIANS(?)) + SIN(RADIANS(lat)) * SIN(RADIANS(?)) )) <=10000 ; "
         cursor.execute(query2, lat, long, lat)
         row2 = cursor.fetchall()
         for i in row2:
@@ -60,7 +60,6 @@ def page2():
     maxlong = ""
     system = ""
     salpics = []
-    days = ""
     if request.method == "POST":
         minlan = request.form['minlan']
         maxlan = request.form['maxlan']
@@ -68,15 +67,15 @@ def page2():
         maxlong = request.form['maxlong']
         days = request.form['days']
         # Execute a simple select query
-        query = f"SELECT * FROM dbo.all_month WHERE mag BETWEEN ? AND ? AND CAST(time AS DATE) BETWEEN '2023-06-01' AND '2023-06-{days}'"
-        cursor.execute(query, min, max)
+        query = f"SELECT * FROM dbo.city WHERE lan BETWEEN ? AND ? AND lon BETWEEN ? AND ?"
+        cursor.execute(query, minlan, maxlan, minlan, maxlong)
         row = cursor.fetchall()
         if row is None:
             system = None
         else:
             for i in row:
                 salpics.append(i)
-    return render_template("2)Page.html", range=range, salpics=salpics, system=system)
+    return render_template("2)Page.html", salpics=salpics, system=system)
 
 
 @app.route("/page3/", methods=['GET', 'POST'])
@@ -145,7 +144,7 @@ def page4b():
         state = request.form['city']
 
         # Execute a query
-        query = "SELECT * FROM dbo.city WHERE city=? OR state=?"
+        query = "SELECT * FROM dbo.city WHERE city=? AND state=?"
         cursor.execute(query, city, state)
 
         # Fetch a single row
@@ -158,7 +157,7 @@ def page4b():
                 # Assuming the table has columns named 'column1', 'column2', and 'column3'
                 salpics.append(row[i])
 
-        query = "DELETE FROM dbo.city WHERE city=? or state=?"
+        query = "DELETE FROM dbo.city WHERE city=? AND state=?"
         cursor.execute(query, city, state)
         conn.commit()
 

@@ -21,7 +21,7 @@
 
 
         {% if salpics %}
-            <h2>The earthquakes in this magnitude are: </h2>
+            <h2>Details with city name {{city}} is: </h2>
             <ul style="list-style-type:none">
                 {% for salpic in salpics %}
                 <table>
@@ -31,13 +31,6 @@
                         <td>{{salpic[2]}}</td>
                         <td>{{salpic[3]}}</td>
                         <td>{{salpic[4]}}</td>
-                        <td>{{salpic[5]}}</td>
-                        <td>{{salpic[6]}}</td>
-                        <td>{{salpic[7]}}</td>
-                        <td>{{salpic[8]}}</td>
-                        <td>{{salpic[9]}}</td>
-                        <td>{{salpic[10]}}</td>
-                        <td>{{salpic[11]}}</td>
                     </tr>
                 </table>
                 {% endfor %}

@@ -9,7 +9,6 @@
         <form method="POST">
             <label for="city">Enter city to delete the row: </label>
             <input type="text" id="city" name="city">
-            <h2> OR </h2>
             <label for="state">Enter state to delete the row: </label>
             <input type="text" id="state" name="state">
             <input type="submit" value="Submit" placeholder="Submit"><br>
@@ -17,7 +16,7 @@
 
 
         {% if salpics  %}
-        <h2>Deleting all rows:</h2>
+        <h2>Deleting row with city:{{city}} and state:{{state}}:</h2>
             <ul style="list-style-type:none">
                 <table>
                     <tr>
